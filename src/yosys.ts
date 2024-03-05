@@ -297,7 +297,22 @@ export interface YosysData {
 
 
 function execYosys(files: string[], command: string): Promise<YosysData> {
-    const proc = exec(`yosys -o temp.json ${command} "${files.join('" "')}"`);
+
+    const proc_ghdl = exec(`ghdl -a "${files.join(' ')}"`);
+
+    return new Promise(res => {
+        proc_ghdl.stderr.on("data", (data) => {
+            logger.log(data);
+        });
+        proc_ghdl.on("exit", (code) => {
+            if (code != 0) {
+                throw new Error("An error occurred while GHDL tried to analyze your code.");
+            }
+        });
+    })
+
+
+    const proc = exec(`yosys -m ghdl -o temp.json ${command} "${files.join('" "')}"`);
 
     return new Promise(res => {
         proc.stderr.on("data", (data) => {
@@ -322,7 +337,7 @@ export async function genNetlist(files: string[]): Promise<YosysData> {
         }
     }
 
-    let first = await execYosys(files, `-p "proc;"`); // run empty pass to find all module names
+    let first = await execYosys(files, `-p "proc; ghdl"`); // run empty pass to find all module names
     let modules = Object.keys(first.modules).map(x => x.substring(10));
 
     let res: YosysData = {
@@ -330,7 +345,7 @@ export async function genNetlist(files: string[]): Promise<YosysData> {
         modules: {}
     };
 
-    const commands = "proc; flatten; wreduce; opt; fsm; opt; memory -nomap -nordff; opt; muxpack; peepopt; async2sync; wreduce; opt -mux_bool";
+    const commands = "proc; flatten; wreduce; opt; fsm; opt; memory -nomap -nordff; opt; muxpack; peepopt; async2sync; wreduce; opt -mux_bool; ghdl";
     for (const module of modules) {
         try {
             const proc = await execYosys(files, `-p "${commands}" -r "${module}"`);
