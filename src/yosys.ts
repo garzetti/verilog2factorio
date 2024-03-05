@@ -300,16 +300,15 @@ function execYosys(files: string[], command: string): Promise<YosysData> {
 
     const proc_ghdl = exec(`ghdl -a "${files.join(' ')}"`);
 
-    return new Promise(res => {
-        proc_ghdl.stderr.on("data", (data) => {
-            logger.log(data);
-        });
-        proc_ghdl.on("exit", (code) => {
-            if (code != 0) {
-                throw new Error("An error occurred while GHDL tried to analyze your code.");
-            }
-        });
-    })
+
+    proc_ghdl.stderr.on("data", (data) => {
+        logger.log(data);
+    });
+    proc_ghdl.on("exit", (code) => {
+        if (code != 0) {
+            throw new Error("An error occurred while GHDL tried to analyze your code.");
+        }
+    });
 
 
     const proc = exec(`yosys -m ghdl -o temp.json ${command} "${files.join('" "')}"`);
