@@ -340,7 +340,7 @@ export async function genNetlist(files: string[]): Promise<YosysData> {
     let modules = Object.keys(first.modules).map(x => x.substring(10));
 
     console.log("Moduli: " + modules);
-    console.log("First: " + first);
+    console.log("First: " + first.modules);
 
     let res: YosysData = {
         creator: first.creator,
