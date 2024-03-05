@@ -344,7 +344,6 @@ export async function genNetlist(files: string[]): Promise<YosysData> {
         modules: {}
     };
     console.log("Cacca");
-    throw new Error("CACCA");
     const commands = "proc; flatten; wreduce; opt; fsm; opt; memory -nomap -nordff; opt; muxpack; peepopt; async2sync; wreduce; opt -mux_bool; ghdl";
     for (const module of modules) {
         try {
