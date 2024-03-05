@@ -339,6 +339,8 @@ export async function genNetlist(files: string[]): Promise<YosysData> {
     let first = await execYosys(files, `-p "proc; ghdl"`); // run empty pass to find all module names
     let modules = Object.keys(first.modules).map(x => x.substring(10));
 
+    console.log("Moduli: " + modules);
+
     let res: YosysData = {
         creator: first.creator,
         modules: {}
@@ -347,8 +349,8 @@ export async function genNetlist(files: string[]): Promise<YosysData> {
     const commands = "proc; flatten; wreduce; opt; fsm; opt; memory -nomap -nordff; opt; muxpack; peepopt; async2sync; wreduce; opt -mux_bool; ghdl";
     for (const module of modules) {
         try {
-            console.log("Caccona");
-            const proc = await execYosys(files, `-p "${commands}" -r "${module}"`);
+            console.log("Caccona " + module);
+            const proc = await execYosys(files, `-p "${commands}"`); //-r "${module}"`);
             res.modules[module] = proc.modules[module];
         } catch (e) {
             console.warn(`Failed to elaborate design for module "${module}"`);
