@@ -321,10 +321,9 @@ function execYosys(files: string[], command: string): Promise<YosysData> {
             if (code != 0) {
                 throw new Error("An error occurred while yosys tried to compile your code.");
             }
-            throw new Error("BLABLABLA");
             const data = JSON.parse(fs.readFileSync("./temp.json", 'utf8'));
             fs.unlinkSync("temp.json");
-
+            console.log(JSON.stringify(data));
             res(data);
         });
     })
