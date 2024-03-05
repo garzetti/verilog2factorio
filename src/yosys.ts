@@ -344,10 +344,11 @@ export async function genNetlist(files: string[]): Promise<YosysData> {
         creator: first.creator,
         modules: {}
     };
-
+    print("Cacca");
     const commands = "proc; flatten; wreduce; opt; fsm; opt; memory -nomap -nordff; opt; muxpack; peepopt; async2sync; wreduce; opt -mux_bool; ghdl";
     for (const module of modules) {
         try {
+            print("Caccona");
             const proc = await execYosys(files, `-p "${commands}" -r "${module}"`);
             res.modules[module] = proc.modules[module];
         } catch (e) {
