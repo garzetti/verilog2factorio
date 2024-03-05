@@ -336,7 +336,7 @@ export async function genNetlist(files: string[]): Promise<YosysData> {
         }
     }
 
-    let first = await execYosys(files, `-p "proc; ghdl"`); // run empty pass to find all module names
+    let first = await execYosys(files, `-p "ghdl; proc"`); // run empty pass to find all module names
     let modules = Object.keys(first.modules).map(x => x.substring(10));
 
     console.log("Moduli: " + modules);
@@ -347,7 +347,7 @@ export async function genNetlist(files: string[]): Promise<YosysData> {
         modules: {}
     };
     console.log("Cacca");
-    const commands = "proc; flatten; wreduce; opt; fsm; opt; memory -nomap -nordff; opt; muxpack; peepopt; async2sync; wreduce; opt -mux_bool; ghdl";
+    const commands = "ghdl; proc; flatten; wreduce; opt; fsm; opt; memory -nomap -nordff; opt; muxpack; peepopt; async2sync; wreduce; opt -mux_bool";
     for (const module of modules) {
         try {
             console.log("Caccona " + module);
