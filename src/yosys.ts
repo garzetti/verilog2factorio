@@ -312,7 +312,7 @@ function execYosys(files: string[], command: string): Promise<YosysData> {
 
 
     const proc = exec(`yosys -m ghdl -o temp.json ${command}`);
-    console.log("Eseguo yosys -m ghdl -o temp.json" + command);
+    console.log("Eseguo yosys -m ghdl -o temp.json " + command);
     return new Promise(res => {
         proc.stderr.on("data", (data) => {
             logger.log(data);
@@ -321,6 +321,7 @@ function execYosys(files: string[], command: string): Promise<YosysData> {
             if (code != 0) {
                 throw new Error("An error occurred while yosys tried to compile your code.");
             }
+            throw new Error("BLABLABLA");
             const data = JSON.parse(fs.readFileSync("./temp.json", 'utf8'));
             fs.unlinkSync("temp.json");
 
