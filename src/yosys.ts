@@ -337,7 +337,7 @@ export async function genNetlist(files: string[]): Promise<YosysData> {
     }
 
     let first = await execYosys(files, `-p "ghdl; proc"`); // run empty pass to find all module names
-    let modules = Object.keys(first.modules).map(x => x.substring(10));
+    let modules = Object.keys(first.modules);//.map(x => x.substring(10));
 
     console.log("Moduli: " + modules);
     console.log("First: " + first.modules);
