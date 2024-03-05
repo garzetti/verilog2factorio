@@ -312,7 +312,7 @@ function execYosys(files: string[], command: string): Promise<YosysData> {
 
 
     const proc = exec(`yosys -m ghdl -o temp.json ${command}`);
-
+    console.log("Eseguo yosys -m ghdl -o temp.json" + ${command});
     return new Promise(res => {
         proc.stderr.on("data", (data) => {
             logger.log(data);
